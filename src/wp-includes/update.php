@@ -668,29 +668,14 @@ function maybe_trigger_updates() {
 		return;
 	}
 
-	$query_args = array(
-		'action' => 'check_update_apis',
-		'nonce'  => wp_create_nonce( 'check_update_apis' ),
-	);
-
-	$url = add_query_arg( $query_args, admin_url( 'admin-ajax.php' ) );
-
-	$options = array(
-		'timeout'   => 0.01,
-		'blocking'  => false,
-		'cookies'   => $_COOKIE,
-		/** This filter is documented in wp-includes/class-wp-http-streams.php */
-		'sslverify' => apply_filters( 'https_local_ssl_verify', false ),
-	);
-
-	wp_remote_post( esc_url_raw( $url ), $options );
+	wp_enqueue_script( 'check-updates' );
 }
 
 /**
  * Maybe check core, plugin and theme updates.
  */
-function check_update_apis() {
-	check_ajax_referer( 'check_update_apis', 'nonce' );
+function ajax_check_update_apis() {
+	check_ajax_referer( 'check-updates', 'ajax_nonce' );
 
 	if ( _maybe_update_core() ) {
 		wp_version_check();
@@ -704,7 +689,7 @@ function check_update_apis() {
 		wp_update_themes();
 	}
 
-	wp_die();
+	wp_send_json_success( wp_get_update_data() );
 }
 
 /**
@@ -738,7 +723,7 @@ function wp_clean_update_cache() {
 	delete_site_transient( 'update_core' );
 }
 
-add_action( 'wp_ajax_check_update_apis', 'check_update_apis' );
+add_action( 'wp_ajax_check-updates', 'ajax_check_update_apis' );
 
 if ( ( ! is_main_site() && ! is_network_admin() ) || wp_doing_ajax() ) {
 	return;

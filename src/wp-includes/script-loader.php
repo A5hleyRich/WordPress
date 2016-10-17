@@ -689,6 +689,12 @@ function wp_default_scripts( &$scripts ) {
 			),
 		) );
 
+		$scripts->add( 'check-updates', "/wp-admin/js/check-updates$suffix.js", array( 'jquery', 'wp-util' ), false, 1 );
+		did_action( 'init' ) && $scripts->localize( 'check-updates', 'wpCheckUpdates', array(
+			'ajax_nonce' => wp_create_nonce( 'check-updates' ),
+			'current_updates' => wp_get_update_data(),
+		) );
+
 		$scripts->add( 'farbtastic', '/wp-admin/js/farbtastic.js', array('jquery'), '1.2' );
 
 		$scripts->add( 'iris', '/wp-admin/js/iris.min.js', array( 'jquery-ui-draggable', 'jquery-ui-slider', 'jquery-touch-punch' ), '1.0.7', 1 );
