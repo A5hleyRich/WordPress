@@ -807,11 +807,7 @@ function wp_admin_bar_appearance_menu( $wp_admin_bar ) {
  * @param WP_Admin_Bar $wp_admin_bar
  */
 function wp_admin_bar_updates_menu( $wp_admin_bar ) {
-
 	$update_data = wp_get_update_data();
-
-	if ( !$update_data['counts']['total'] )
-		return;
 
 	$title = '<span class="ab-icon"></span><span class="ab-label">' . number_format_i18n( $update_data['counts']['total'] ) . '</span>';
 	$title .= '<span class="screen-reader-text">' . $update_data['title'] . '</span>';
@@ -821,6 +817,7 @@ function wp_admin_bar_updates_menu( $wp_admin_bar ) {
 		'title' => $title,
 		'href'  => network_admin_url( 'update-core.php' ),
 		'meta'  => array(
+			'class' => $update_data['counts']['total'] ? '' : 'hide-if-no-updates',
 			'title' => $update_data['title'],
 		),
 	) );

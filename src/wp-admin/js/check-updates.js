@@ -27,10 +27,27 @@
 	 */
 	wp.checkUpdates.performCheck = function() {
 		wp.ajax.post( 'check-updates', settings ).done( function( response ) {
+			wp.checkUpdates.updateAdminBar( response );
 			wp.checkUpdates.updateDashboardMenu( response );
 			wp.checkUpdates.updatePluginsMenu( response );
 			wp.checkUpdates.updateFooter( response );
 		});
+	};
+
+	/**
+	 * Update admin bar.
+	 *
+	 * @param {object} response Response from the server.
+	 */
+	wp.checkUpdates.updateAdminBar = function( response ) {
+		if ( response.counts.total === wp.checkUpdates.currentCounts.total ) {
+			return;
+		}
+
+		var $menu = $( '#wp-admin-bar-updates' );
+
+		$menu.find( '.ab-label' ).text( response.counts.total );
+		$menu.removeClass( 'hide-if-no-updates' );
 	};
 
 	/**

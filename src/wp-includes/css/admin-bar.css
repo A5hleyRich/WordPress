@@ -593,6 +593,10 @@ html:lang(he-il) .rtl #wpadminbar *  {
 	top: 2px;
 }
 
+#wpadminbar .hide-if-no-updates {
+	display: none;
+}
+
 /**
  * Search
  */
