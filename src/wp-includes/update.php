@@ -689,7 +689,10 @@ function ajax_check_update_apis() {
 		wp_update_themes();
 	}
 
-	wp_send_json_success( wp_get_update_data() );
+	$response = wp_get_update_data();
+	$response['message'] = core_update_footer();
+
+	wp_send_json_success( $response );
 }
 
 /**

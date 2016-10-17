@@ -23,30 +23,13 @@
 	wp.checkUpdates.currentTitle = settings.current_updates.title;
 
 	/**
-	 * New update counts.
-	 *
-	 * @type {object}
-	 */
-	wp.checkUpdates.newCounts = {};
-
-	/**
-	 * New update string.
-	 *
-	 * @type {string}
-	 */
-	wp.checkUpdates.newTitle = '';
-
-	/**
 	 * Perform check.
 	 */
 	wp.checkUpdates.performCheck = function() {
 		wp.ajax.post( 'check-updates', settings ).done( function( response ) {
-			wp.checkUpdates.newCounts = response.counts;
-			wp.checkUpdates.newTitle = response.title;
-
-			// Update UI
 			wp.checkUpdates.updateDashboardMenu( response );
 			wp.checkUpdates.updatePluginsMenu( response );
+			wp.checkUpdates.updateFooter( response );
 		});
 	};
 
@@ -80,6 +63,19 @@
 
 		$menu.find( '.plugin-count' ).text( response.counts.plugins );
 		$menu.find( '.update-plugins' ).addClass( 'count-' + response.counts.plugins ).removeClass( 'count-' + wp.checkUpdates.currentCounts.plugins );
+	};
+
+	/**
+	 * Update footer.
+	 *
+	 * @param {object} response Response from the server.
+	 */
+	wp.checkUpdates.updateFooter = function( response ) {
+		if ( response.counts.wordpress === wp.checkUpdates.currentCounts.wordpress ) {
+			return;
+		}
+
+		$( '#footer-upgrade' ).html( response.message );
 	};
 
 	$( function() {
